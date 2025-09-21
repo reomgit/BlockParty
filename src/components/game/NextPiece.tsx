@@ -18,9 +18,11 @@ export function NextPiece({ piece }: NextPieceProps) {
     shape.forEach((row, y) => {
       row.forEach((value, x) => {
         if (value !== 0) {
-          const yOffset = piece === 'I' ? -1 : 0;
+          const yOffset = piece === 'I' ? 1 : 0;
           const xOffset = piece === 'I' || piece === 'O' ? 0 : 1;
-          grid[y + yOffset][x + xOffset] = piece;
+          if (grid[y + yOffset]) {
+            grid[y + yOffset][x + xOffset] = piece;
+          }
         }
       });
     });
