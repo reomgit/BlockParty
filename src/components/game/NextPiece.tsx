@@ -5,23 +5,42 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Cell from './Cell';
 
 type NextPieceProps = {
-  piece: keyof Omit<typeof TETROMINOES, '0'> | null;
+  piece: keyof Omit<typeof TETROMINOES, '0' | 'ghost'> | null;
 };
 
 export function NextPiece({ piece }: NextPieceProps) {
-  const shape = piece ? TETROMINOES[piece].shape : TETROMINOES['0'].shape;
   const grid = Array(4)
     .fill(0)
     .map(() => Array(4).fill(0));
 
   if (piece) {
+    const shape = TETROMINOES[piece].shape;
+    
     shape.forEach((row, y) => {
       row.forEach((value, x) => {
         if (value !== 0) {
-          const yOffset = piece === 'I' ? 1 : 0;
-          const xOffset = piece === 'I' || piece === 'O' ? 0 : 1;
-          if (grid[y + yOffset]) {
-            grid[y + yOffset][x + xOffset] = piece;
+          // Centering logic for different piece sizes in the 4x4 preview
+          let yOffset = 0;
+          let xOffset = 0;
+
+          if (piece === 'I') {
+            yOffset = 0;
+            xOffset = 0;
+          } else if (piece === 'O') {
+            yOffset = 1;
+            xOffset = 1;
+          } else {
+            // 3x3 pieces
+            yOffset = 0;
+            xOffset = 0;
+          }
+
+          const targetY = y + yOffset;
+          const targetX = x + xOffset;
+
+          // Safe assignment with bounds check
+          if (grid[targetY] && targetX >= 0 && targetX < 4) {
+            grid[targetY][targetX] = piece;
           }
         }
       });
